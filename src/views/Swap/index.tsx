@@ -495,12 +495,12 @@ export default function Swap() {
                             </>
                           )}
                         </RowBetween>
-                        <RowBetween align="center">
+                        {/* <RowBetween align="center">
                           <Label>{t('Slippage Tolerance')}</Label>
                           <Text bold color="primary">
                             {allowedSlippage / 100}%
                           </Text>
-                        </RowBetween>
+                        </RowBetween> */}
                       </AutoColumn>
                     )}
                   </AutoColumn>
@@ -606,11 +606,11 @@ export default function Swap() {
                   </Box>
                 </Wrapper>
               </AppBody>
-              {!swapIsUnsupported ? (
+              {/* {!swapIsUnsupported ? (
                 trade && <AdvancedSwapDetailsDropdown trade={trade} />
               ) : (
                 <UnsupportedCurrencyFooter currencies={[currencies.INPUT, currencies.OUTPUT]} />
-              )}
+              )} */}
             </StyledInputCurrencyWrapper>
           </StyledSwapContainer>
           {isChartExpanded && (
