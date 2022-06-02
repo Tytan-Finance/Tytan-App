@@ -55,6 +55,13 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
     items: [],
   },
   {
+    label: t('Calculator'),
+    icon: SwapIcon,
+    href: '/calculator',
+    showItemsOnMobile: false,
+    items: [],
+  },
+  {
     label: '',
     href: '/info',
     icon: MoreIcon,
@@ -62,7 +69,7 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
     items: [
       {
         label: t('Chart'),
-        href: 'https://dexscreener.com/bsc/0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
+        href: 'https://dexscreener.com/bsc/0x71125dff884402efff470476440946ef04b56180',
         type: DropdownMenuItemType.EXTERNAL_LINK,
       },
       {

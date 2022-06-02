@@ -25,9 +25,9 @@ const farms: SerializedFarmConfig[] = [
     lpSymbol: 'CAKE-BNB LP',
     lpAddresses: {
       97: '0x3ed8936cAFDF85cfDBa29Fbe5940A5b0524824F4',
-      56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
+      56: '0x71125dfF884402eFFF470476440946eF04b56180',
     },
-    token: serializedTokens.cake,
+    token: serializedTokens.tytan,
     quoteToken: serializedTokens.wbnb,
   },
   {
@@ -36,7 +36,7 @@ const farms: SerializedFarmConfig[] = [
     lpSymbol: 'BUSD-BNB LP',
     lpAddresses: {
       97: '',
-      56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
+      56: '0x57423151Ad2AAFA5378afbA274D30f5fab0d69Df',
     },
     token: serializedTokens.busd,
     quoteToken: serializedTokens.wbnb,

@@ -30,6 +30,14 @@ export const mainnetTokens = defineTokens({
     'PancakeSwap Token',
     'https://pancakeswap.finance/',
   ),
+  tytan: new Token(
+    MAINNET,
+    '0x912F594Fd096E67e0c0A18D496A9f70E3171c330',
+    5,
+    'TYTAN',
+    'Tytan',
+    'https://tytan.finance/',
+  ),
   gmi: new Token(MAINNET, '0x93D8d25E3C9A847a5Da79F79ecaC89461FEcA846', 18, 'GMI', 'Gamifi', 'https://gamifi.gg/'),
   tlos: new Token(MAINNET, '0xb6C53431608E626AC81a9776ac3e999c5556717c', 18, 'TLOS', 'Telos', 'https://www.telos.net/'),
   beta: new Token(

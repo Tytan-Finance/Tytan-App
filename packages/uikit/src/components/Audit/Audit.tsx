@@ -27,7 +27,7 @@ const AuditLink = styled.a`
 const Audit: React.FC<Props> = ({ cakePriceUsd, color = "textSubtle", showSkeleton = true }) => {
   return cakePriceUsd ? (
     <AuditLink
-      href="https://spadetech.io/"
+      href="https://drive.google.com/file/d/1krgWsiESElM367n8ykiPXTVpSZ4BEzw0/view"
       target="_blank"
     >
       <SpadeTechIcon width="108px" mr="8px" />

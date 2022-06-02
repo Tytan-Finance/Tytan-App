@@ -109,7 +109,7 @@ const Hero = () => {
       >
         <Flex flex="1" flexDirection="column">
           <Heading scale="xxl" color="secondary" mb="24px">
-            {t('A Revolutionary Fork of Tytan')}
+            {t('Tytan- DeFi 2.0 reimagined')}
           </Heading>
           <Heading scale="md" mb="24px">
             {t('TYTAN provides a decentralized financial asset which rewards users with a sustainable fixed compound interest model through use of it’s unique TYTAN protocol.')}
