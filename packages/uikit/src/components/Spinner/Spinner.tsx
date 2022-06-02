@@ -9,13 +9,13 @@ const rotate = keyframes`
     transform: transalate(0px, 0px);
   }
   25% {
-    transform: translate(40px, 40px);
+    transform: translate(120px, 120px);
   }
   50% {
     transform: translate(0px, 0px);
   }
   75% {
-    transform: translate(40px, 40px);
+    transform: translate(120px, 120px);
   }
   100% {
     transform: translate(0px, 0px);
@@ -45,6 +45,7 @@ const RotatingPancakeIcon = styled(PancakeIcon)`
   left: 0;
   animation: ${rotate} 4s linear infinite;
   transform: translate3d(0, 0, 0);
+  z-index: 1;
 `;
 
 const FloatingPanIcon = styled(PanIcon)`
