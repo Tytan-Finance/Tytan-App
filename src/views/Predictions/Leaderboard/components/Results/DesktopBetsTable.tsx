@@ -1,4 +1,4 @@
-import { Token } from '@pancakeswap/sdk'
+import { Token } from '@orbitalswap/sdk'
 import { Box, Card, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import PreviousBetsTable from '../PreviousBetsTable'

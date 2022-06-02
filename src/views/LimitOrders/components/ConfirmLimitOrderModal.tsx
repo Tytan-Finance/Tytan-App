@@ -1,4 +1,4 @@
-import { Currency } from '@pancakeswap/sdk'
+import { Currency } from '@orbitalswap/sdk'
 import {
   ArrowDownIcon,
   Button,
