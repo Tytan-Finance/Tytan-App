@@ -80,12 +80,17 @@ export const priceCakeFromPidSelector = createSelector([selectCakeFarm], (cakeBn
   return new BigNumber(cakePriceBusdAsString)
 })
 
+export const priceBnbFromPidSelector = createSelector([selectCakeFarm], (cakeBnbFarm) => {
+  const deserializedCakeBnbFarm = deserializeFarm(cakeBnbFarm)
+  const bnbPriceBusdAsString = deserializedCakeBnbFarm.quoteTokenPriceBusd
+  return new BigNumber(bnbPriceBusdAsString)
+})
+
 export const farmFromLpSymbolSelector = (lpSymbol: string) =>
   createSelector([selectFarmByKey('lpSymbol', lpSymbol)], (farm) => deserializeFarm(farm))
 
 export const makeLpTokenPriceFromLpSymbolSelector = (lpSymbol: string) =>
   createSelector([selectFarmByKey('lpSymbol', lpSymbol)], (farm) => {
-    console.log(farm, '6565656')
     const deserializedFarm = deserializeFarm(farm)
     const farmTokenPriceInUsd = deserializedFarm && new BigNumber(deserializedFarm.tokenPriceBusd)
     let lpTokenPrice = BIG_ZERO

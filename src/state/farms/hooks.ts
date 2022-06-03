@@ -14,6 +14,7 @@ import {
   farmSelector,
   farmFromLpSymbolSelector,
   priceCakeFromPidSelector,
+  priceBnbFromPidSelector,
   makeBusdPriceFromPidSelector,
   makeUserFarmFromPidSelector,
   makeLpTokenPriceFromLpSymbolSelector,
@@ -91,7 +92,6 @@ export const useBusdPriceFromPid = (pid: number): BigNumber => {
 }
 
 export const useLpTokenPrice = (symbol: string) => {
-  console.log(symbol, '4444444')
   const lpTokenPriceFromLpSymbol = useMemo(() => makeLpTokenPriceFromLpSymbolSelector(symbol), [symbol])
   return useSelector(lpTokenPriceFromLpSymbol)
 }
@@ -101,4 +101,7 @@ export const useLpTokenPrice = (symbol: string) => {
  */
 export const usePriceCakeBusd = (): BigNumber => {
   return useSelector(priceCakeFromPidSelector)
+}
+export const usePriceBnbBusd = (): BigNumber => {
+  return useSelector(priceBnbFromPidSelector)
 }

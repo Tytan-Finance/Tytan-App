@@ -5,7 +5,7 @@ import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import { useEffect, useState } from 'react'
-import { usePriceCakeBusd, useLpTokenPrice } from 'state/farms/hooks'
+import { usePriceCakeBusd, useLpTokenPrice, usePriceBnbBusd } from 'state/farms/hooks'
 import styled from 'styled-components'
 import { formatBigNumber, formatLocalisedCompactNumber } from 'utils/formatBalance'
 import { multicallv2 } from 'utils/multicall'
@@ -71,6 +71,11 @@ const StyledHeading = styled(Heading)`
     font-size: 40px;
   }
 `
+export interface BscScanResponse {
+  status: string
+  message: string
+  result: string
+}
 
 const LiquidityData = () => {
   const { t } = useTranslation()
@@ -79,12 +84,12 @@ const LiquidityData = () => {
   const lpSymbol = 'CAKE-BNB LP'
   const lpPrice = useLpTokenPrice(lpSymbol)
 
-  console.log(lpPrice.toNumber(), '45454')
   const {
-    data: { treasury, circulatingSupply, liquidity } = {
+    data: { treasury, circulatingSupply, liquidity, treasuryBNB } = {
       treasury: 0,
       circulatingSupply: 0,
       liquidity: 0,
+      treasuryBNB: 0,
     },
   } = useSWR(
     loadData ? ['tytanLiquidityAndTreasury'] : null,
@@ -108,13 +113,16 @@ const LiquidityData = () => {
         }),
       ])
       const [totalSupply, treasuryBalance, lpAmount] = tokenDataResultRaw.flat()
-
+      const response = await fetch('https://api.bscscan.com/api?module=account&action=balance&address=0xD898A08817F664A3404A3e21f4990937a33b755D&apikey=N8TEIA1BQ4Z3KB7HSMDY1RGTAW7MPVRWRA')
+      const responseData: BscScanResponse = await response.json()
+      const treasuryBNBBalance = BigNumber.from(responseData.result)
       const circulating = totalSupply
 
       return {
         treasury: treasuryBalance ? +formatBigNumber(treasuryBalance, 0, 5) : 0,
         circulatingSupply: circulating ? +formatBigNumber(circulating) : 0,
         liquidity: lpAmount ? +formatBigNumber(lpAmount) : 0,
+        treasuryBNB: treasuryBNBBalance ? +formatBigNumber(treasuryBNBBalance) : 0,
       }
     },
     {
@@ -122,7 +130,8 @@ const LiquidityData = () => {
     },
   )
   const tytanPriceBusd = usePriceCakeBusd()
-  const treasuryCap = tytanPriceBusd.times(treasury)
+  const bnbPriceBusd = usePriceBnbBusd()
+  const treasuryCap = tytanPriceBusd.times(treasury).plus(bnbPriceBusd.times(treasuryBNB))
   const treasuryString = formatLocalisedCompactNumber(treasuryCap.toNumber())
   const totalLiquidity = lpPrice.times(liquidity)
   const totalLiquidityString = formatLocalisedCompactNumber(totalLiquidity.toNumber())
