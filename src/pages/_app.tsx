@@ -57,7 +57,7 @@ function MyApp(props: AppProps) {
           content="We've travelled the wormholes of the rebase galaxy far & wide. Only to find the future is TYTAN. With immediate utility on launch. Strap in and feel the G-force of rebase at its finest."
         />
         <meta name="theme-color" content="#00FFA3" />
-        <meta name="twitter:image" content="https://tytan.finance/images/hero.png" />
+        <meta name="twitter:image" content="https://app.tytan.finance/images/hero.png" />
         <meta
           name="twitter:description"
           content="TYTAN provides a decentralized financial asset which rewards users with a sustainable fixed compound interest model through use of it’s unique TYTAN protocol."
