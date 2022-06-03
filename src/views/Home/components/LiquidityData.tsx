@@ -85,11 +85,12 @@ const LiquidityData = () => {
   const lpPrice = useLpTokenPrice(lpSymbol)
 
   const {
-    data: { treasury, circulatingSupply, liquidity, treasuryBNB } = {
+    data: { treasury, tifSupply, liquidity, treasuryBNB, afterBurnerSupply } = {
       treasury: 0,
-      circulatingSupply: 0,
+      tifSupply: 0,
       liquidity: 0,
       treasuryBNB: 0,
+      afterBurnerSupply: 0,
     },
   } = useSWR(
     loadData ? ['tytanLiquidityAndTreasury'] : null,
@@ -107,22 +108,31 @@ const LiquidityData = () => {
         name: 'balanceOf',
         params: ['0xD898A08817F664A3404A3e21f4990937a33b755D'],
       }
+      const afterBurnerTokenCall = {
+        address: tokens.tytan.address,
+        name: 'balanceOf',
+        params: ['0x15E4A5d2Ee7d3836176D9Fb72e12020C068Ca5EF'],
+      }
       const [tokenDataResultRaw] = await Promise.all([
-        multicallv2(tytanAbi, [totalSupplyCall, treasuryTokenCall, lpSupplyCall], {
+        multicallv2(tytanAbi, [totalSupplyCall, treasuryTokenCall, lpSupplyCall, afterBurnerTokenCall], {
           requireSuccess: false,
         }),
       ])
-      const [totalSupply, treasuryBalance, lpAmount] = tokenDataResultRaw.flat()
+      const [totalSupply, treasuryBalance, lpAmount, afterburnerAmount] = tokenDataResultRaw.flat()
       const response = await fetch('https://api.bscscan.com/api?module=account&action=balance&address=0xD898A08817F664A3404A3e21f4990937a33b755D&apikey=N8TEIA1BQ4Z3KB7HSMDY1RGTAW7MPVRWRA')
       const responseData: BscScanResponse = await response.json()
       const treasuryBNBBalance = BigNumber.from(responseData.result)
+      const tifresponse = await fetch('https://api.bscscan.com/api?module=account&action=balance&address=0xFBFb683D3e5FCeC7EaE5780cFd555C4DF36e0207&apikey=N8TEIA1BQ4Z3KB7HSMDY1RGTAW7MPVRWRA')
+      const tifResponseData: BscScanResponse = await tifresponse.json()
+      const tifBNBBalance = BigNumber.from(tifResponseData.result)
       const circulating = totalSupply
 
       return {
         treasury: treasuryBalance ? +formatBigNumber(treasuryBalance, 0, 5) : 0,
-        circulatingSupply: circulating ? +formatBigNumber(circulating) : 0,
+        tifSupply: tifBNBBalance ? +formatBigNumber(tifBNBBalance) : 0,
         liquidity: lpAmount ? +formatBigNumber(lpAmount) : 0,
         treasuryBNB: treasuryBNBBalance ? +formatBigNumber(treasuryBNBBalance) : 0,
+        afterBurnerSupply: afterburnerAmount ? +formatBigNumber(afterburnerAmount, 0, 5) : 0,
       }
     },
     {
@@ -135,6 +145,8 @@ const LiquidityData = () => {
   const treasuryString = formatLocalisedCompactNumber(treasuryCap.toNumber())
   const totalLiquidity = lpPrice.times(liquidity)
   const totalLiquidityString = formatLocalisedCompactNumber(totalLiquidity.toNumber())
+  const tifCap = bnbPriceBusd.times(tifSupply)
+  const afterBurnerCap = tytanPriceBusd.times(afterBurnerSupply)
 
   useEffect(() => {
     if (isIntersecting) {
@@ -143,29 +155,54 @@ const LiquidityData = () => {
   }, [isIntersecting])
 
   return (
-    <Flex flexDirection={['column', null, null, 'row']} mb='48px'>
-      <StyledColumn style={{ gridArea: 'a' }}>
-        <StyledText color="textSubtle">{t('Liquidity')}</StyledText>
-        {totalLiquidity?.gt(0) && totalLiquidityString ? (
-          <StyledHeading color="primary" scale="xl">{t('$%liquidity%', { liquidity: totalLiquidityString })}</StyledHeading>
-        ) : (
-          <Skeleton height={24} width={126} my="4px" />
-        )}
-        {/* <StatusText color="success">+1.5%</StatusText> */}
-      </StyledColumn>
-      <StyledColumn noMarginRight style={{ gridArea: 'b' }}>
-        <StyledText color="textSubtle">{t('Treasury')}</StyledText>
-        {treasuryCap?.gt(0) && treasuryString ? (
-          <StyledHeading color="primary" scale="xl">{t('$%treasuryCap%', { treasuryCap: treasuryString })}</StyledHeading>
-        ) : (
-          <>
-            <div ref={observerRef} />
+    <>
+      <Flex flexDirection={['column', null, null, 'row']} mb='48px'>
+        <StyledColumn style={{ gridArea: 'a' }}>
+          <StyledText color="textSubtle">{t('Liquidity')}</StyledText>
+          {totalLiquidity?.gt(0) && totalLiquidityString ? (
+            <StyledHeading color="primary" scale="xl">{t('$%liquidity%', { liquidity: totalLiquidityString })}</StyledHeading>
+          ) : (
             <Skeleton height={24} width={126} my="4px" />
-          </>
-        )}
-        {/* <StatusText color="failure">-0.5%</StatusText> */}
-      </StyledColumn>
-    </Flex>
+          )}
+          {/* <StatusText color="success">+1.5%</StatusText> */}
+        </StyledColumn>
+        <StyledColumn noMarginRight style={{ gridArea: 'b' }}>
+          <StyledText color="textSubtle">{t('Treasury')}</StyledText>
+          {treasuryCap?.gt(0) && treasuryString ? (
+            <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={treasuryCap.toNumber()} prefix="$" />
+          ) : (
+            <>
+              <div ref={observerRef} />
+              <Skeleton height={24} width={126} my="4px" />
+            </>
+          )}
+          {/* <StatusText color="failure">-0.5%</StatusText> */}
+        </StyledColumn>
+      </Flex>
+      <Flex flexDirection={['column', null, null, 'row']} mb='48px'>
+        <StyledColumn style={{ gridArea: 'a' }}>
+          <StyledText color="textSubtle">{t('TIF')}</StyledText>
+          {tifCap?.gt(0) ? (
+            <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={tifCap.toNumber()} prefix="$" />
+          ) : (
+            <Skeleton height={24} width={126} my="4px" />
+          )}
+          {/* <StatusText color="success">+1.5%</StatusText> */}
+        </StyledColumn>
+        <StyledColumn noMarginRight style={{ gridArea: 'b' }}>
+          <StyledText color="textSubtle">{t('AfterBurner')}</StyledText>
+          {afterBurnerCap?.gt(0) ? (
+            <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={afterBurnerCap.toNumber()} prefix="$" />
+          ) : (
+            <>
+              <div ref={observerRef} />
+              <Skeleton height={24} width={126} my="4px" />
+            </>
+          )}
+          {/* <StatusText color="failure">-0.5%</StatusText> */}
+        </StyledColumn>
+      </Flex>
+    </>
   )
 }
 

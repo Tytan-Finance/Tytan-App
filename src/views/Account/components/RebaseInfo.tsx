@@ -138,7 +138,7 @@ const RebaseInfo = () => {
           <StyledColumn>
             <StyledText color="textSubtle">{t('Next Reward Amount:')}</StyledText>
             {tytanBalance ? (
-              <StyledBalance color="primary"  decimals={2} lineHeight="1.1" bold value={tytanBalance * 0.0004072} />
+              <StyledBalance color="primary"  decimals={2} lineHeight="1.0" bold value={tytanBalance * 0.0004072} unit=" TYTAN" />
             ) : (
               <>
                 <div ref={observerRef} />

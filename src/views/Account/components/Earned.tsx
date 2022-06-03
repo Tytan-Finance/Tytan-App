@@ -152,7 +152,7 @@ const Earned = () => {
       <StyledColumn style={{ gridArea: 'a' }}>
         <StyledText color="textSubtle">{t('Your Balance')}</StyledText>
         {myBalance ? (
-          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={myBalance} />
+          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={myBalance} unit=" TYTAN"/>
         ) : (
           <Skeleton height={24} width={126} my="4px" />
         )}
