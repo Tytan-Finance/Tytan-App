@@ -152,11 +152,11 @@ const Earned = () => {
       <StyledColumn style={{ gridArea: 'a' }}>
         <StyledText color="textSubtle">{t('Your Balance')}</StyledText>
         {myBalance ? (
-          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={myBalance} unit=" TYTAN"/>
+          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={mcap.toNumber()} prefix="$"/>
         ) : (
           <Skeleton height={24} width={126} my="4px" />
         )}
-        <StyledText color="textSubtle">{formatDate(today)}</StyledText>
+        <StyledText color="textSubtle">{`${myBalance} TYTAN`}</StyledText>
       </StyledColumn>
       <StyledColumn noMarginRight style={{ gridArea: 'b' }}>
         <StyledText color="textSubtle">{t('APY')}</StyledText>

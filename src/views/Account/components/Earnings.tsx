@@ -147,7 +147,7 @@ const Earnings = () => {
       <StyledColumn style={{ gridArea: 'b' }}>
         <StyledText color="textSubtle">{t('Your Earnings (Daily)')}</StyledText>
         {dailyEarning ? (
-          <StyledBalance color="primary"  decimals={2} lineHeight="1.1" bold value={dailyEarningsInUsd.toNumber()} unit='$' />
+          <StyledBalance color="primary"  decimals={2} lineHeight="1.1" bold value={dailyEarningsInUsd.toNumber()} prefix='$' />
         ) : (
           <>
             <div ref={observerRef} />
