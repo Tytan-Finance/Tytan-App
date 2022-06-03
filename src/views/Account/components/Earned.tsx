@@ -1,6 +1,7 @@
 import { Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
 import Balance from 'components/Balance'
-import cakeAbi from 'config/abi/cake.json'
+import { useWeb3React } from '@web3-react/core'
+import tytanAbi from 'config/abi/tytan.json'
 import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
@@ -85,41 +86,49 @@ const emissionsPerBlock = 14.25
 const planetFinanceBurnedTokensWei = BigNumber.from('637407922445268000000000')
 const cakeVault = getCakeVaultV2Contract()
 const apy = 125124.33;
+const padTo2Digits = (num) => {
+  return num.toString().padStart(2, '0');
+}
 
+const formatDate = (date) => {
+  return [
+    padTo2Digits(date.getMonth() + 1),
+    padTo2Digits(date.getDate()),
+    date.getFullYear(),
+  ].join('/');
+}
 const Earned = () => {
   const { t } = useTranslation()
+  const { account } = useWeb3React()
   const { observerRef, isIntersecting } = useIntersectionObserver()
   const [loadData, setLoadData] = useState(false)
   const {
-    data: { cakeSupply, burnedBalance, circulatingSupply } = {
+    data: { cakeSupply, burnedBalance, myBalance } = {
       cakeSupply: 0,
       burnedBalance: 0,
-      circulatingSupply: 0,
+      myBalance: 0,
     },
   } = useSWR(
-    loadData ? ['cakeDataRow'] : null,
+    loadData ? ['earned'] : null,
     async () => {
-      const totalSupplyCall = { address: tokens.cake.address, name: 'totalSupply' }
       const burnedTokenCall = {
-        address: tokens.cake.address,
+        address: tokens.tytan.address,
         name: 'balanceOf',
-        params: ['0x000000000000000000000000000000000000dEaD'],
+        params: [account],
       }
       const [tokenDataResultRaw, totalLockedAmount] = await Promise.all([
-        multicallv2(cakeAbi, [totalSupplyCall, burnedTokenCall], {
+        multicallv2(tytanAbi, [burnedTokenCall], {
           requireSuccess: false,
         }),
         cakeVault.totalLockedAmount(),
       ])
-      const [totalSupply, burned] = tokenDataResultRaw.flat()
+      const [userBalance] = tokenDataResultRaw.flat()
 
-      const totalBurned = planetFinanceBurnedTokensWei.add(burned)
-      const circulating = totalSupply.sub(totalBurned.add(totalLockedAmount))
 
       return {
-        cakeSupply: totalSupply && burned ? +formatBigNumber(totalSupply.sub(totalBurned)) : 0,
-        burnedBalance: burned ? +formatBigNumber(totalBurned) : 0,
-        circulatingSupply: circulating ? +formatBigNumber(circulating) : 0,
+        cakeSupply: userBalance ? +formatBigNumber(userBalance, 0 ,5) : 0,
+        burnedBalance: userBalance ? +formatBigNumber(userBalance, 0 ,5) : 0,
+        myBalance: userBalance ? +formatBigNumber(userBalance, 0 ,5) : 0
       }
     },
     {
@@ -127,8 +136,10 @@ const Earned = () => {
     },
   )
   const cakePriceBusd = usePriceCakeBusd()
-  const mcap = cakePriceBusd.times(circulatingSupply)
+  const mcap = cakePriceBusd.times(myBalance)
   const mcapString = formatLocalisedCompactNumber(mcap.toNumber())
+  
+  const today = new Date()
 
   useEffect(() => {
     if (isIntersecting) {
@@ -139,13 +150,13 @@ const Earned = () => {
   return (
     <Flex flexDirection={['column', null, null, 'row']} mb='48px'>
       <StyledColumn style={{ gridArea: 'a' }}>
-        <StyledText color="textSubtle">{t('Total Earned')}</StyledText>
-        {circulatingSupply ? (
-          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={circulatingSupply} />
+        <StyledText color="textSubtle">{t('Your Balance')}</StyledText>
+        {myBalance ? (
+          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={myBalance} />
         ) : (
           <Skeleton height={24} width={126} my="4px" />
         )}
-        <StyledText color="textSubtle">{t('978.21 TYTAN(100% Increase)')}</StyledText>
+        <StyledText color="textSubtle">{formatDate(today)}</StyledText>
       </StyledColumn>
       <StyledColumn noMarginRight style={{ gridArea: 'b' }}>
         <StyledText color="textSubtle">{t('APY')}</StyledText>

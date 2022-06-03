@@ -91,6 +91,7 @@ export const useBusdPriceFromPid = (pid: number): BigNumber => {
 }
 
 export const useLpTokenPrice = (symbol: string) => {
+  console.log(symbol, '4444444')
   const lpTokenPriceFromLpSymbol = useMemo(() => makeLpTokenPriceFromLpSymbolSelector(symbol), [symbol])
   return useSelector(lpTokenPriceFromLpSymbol)
 }

@@ -1,6 +1,6 @@
 import { Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
 import Balance from 'components/Balance'
-import cakeAbi from 'config/abi/cake.json'
+import tytanAbi from 'config/abi/tytan.json'
 import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
@@ -50,10 +50,11 @@ const Grid = styled.div`
   box-shadow: rgb(0 0 0 / 50%) 10px 10px 20px 0px;
   position: relative;
   justify-content: space-around;
-  grid-template-columns: repeat(2, auto);
+  grid-template-columns: repeat(1, auto);
   grid-template-areas:
-    'a c'
-    'b d';
+    'a'
+    'b'
+    'c';
 
   ${({ theme }) => theme.mediaQueries.sm} {
     grid-gap: 16px;
@@ -62,7 +63,7 @@ const Grid = styled.div`
 
   ${({ theme }) => theme.mediaQueries.md} {
     grid-template-areas:
-      'a b c d';
+      'a b c';
     grid-gap: 32px;
     grid-template-columns: repeat(3, auto);
   }
@@ -113,29 +114,27 @@ const DashBoard = () => {
       circulatingSupply: 0,
     },
   } = useSWR(
-    loadData ? ['cakeDataRow'] : null,
+    loadData ? ['tytanData'] : null,
     async () => {
-      const totalSupplyCall = { address: tokens.cake.address, name: 'totalSupply' }
+      const totalSupplyCall = { address: tokens.tytan.address, name: 'totalSupply' }
       const burnedTokenCall = {
-        address: tokens.cake.address,
+        address: tokens.tytan.address,
         name: 'balanceOf',
-        params: ['0x000000000000000000000000000000000000dEaD'],
+        params: ['0x15E4A5d2Ee7d3836176D9Fb72e12020C068Ca5EF'],
       }
-      const [tokenDataResultRaw, totalLockedAmount] = await Promise.all([
-        multicallv2(cakeAbi, [totalSupplyCall, burnedTokenCall], {
+      const [tokenDataResultRaw] = await Promise.all([
+        multicallv2(tytanAbi, [totalSupplyCall, burnedTokenCall], {
           requireSuccess: false,
-        }),
-        cakeVault.totalLockedAmount(),
+        })
       ])
       const [totalSupply, burned] = tokenDataResultRaw.flat()
 
-      const totalBurned = planetFinanceBurnedTokensWei.add(burned)
-      const circulating = totalSupply.sub(totalBurned.add(totalLockedAmount))
+      const circulating = totalSupply.sub(burned)
 
       return {
-        cakeSupply: totalSupply && burned ? +formatBigNumber(totalSupply.sub(totalBurned)) : 0,
-        burnedBalance: burned ? +formatBigNumber(totalBurned) : 0,
-        circulatingSupply: circulating ? +formatBigNumber(circulating) : 0,
+        cakeSupply: totalSupply ? +formatBigNumber(totalSupply, 0, 5) : 0,
+        burnedBalance: burned ? +formatBigNumber(burned, 0, 5) : 0,
+        circulatingSupply: circulating ? +formatBigNumber(circulating, 0, 5) : 0,
       }
     },
     {
@@ -173,11 +172,11 @@ const DashBoard = () => {
           </>
         )}
       </StyledColumn>
-      <StyledColumn noMobileBorder style={{ gridArea: 'c' }}>
+      {/* <StyledColumn noMobileBorder style={{ gridArea: 'c' }}>
         <StyledText color="textSubtle">{t('Holders')}</StyledText>
-        <StyledBalance color="primary" decimals={0} lineHeight="1.1" bold value={75000} />
-      </StyledColumn>
-      <StyledColumn noMobileBorder style={{ gridArea: 'd' }}>
+        <StyledBalance color="primary" decimals={0} lineHeight="1.1" bold value={1205} />
+      </StyledColumn> */}
+      <StyledColumn noMobileBorder style={{ gridArea: 'c' }}>
         <StyledText color="textSubtle">{t('Market cap')}</StyledText>
         {mcap?.gt(0) && mcapString ? (
           <StyledHeading color="primary" scale="xl">{t('$%marketCap%', { marketCap: mcapString })}</StyledHeading>

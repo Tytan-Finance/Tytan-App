@@ -85,11 +85,12 @@ export const farmFromLpSymbolSelector = (lpSymbol: string) =>
 
 export const makeLpTokenPriceFromLpSymbolSelector = (lpSymbol: string) =>
   createSelector([selectFarmByKey('lpSymbol', lpSymbol)], (farm) => {
+    console.log(farm, '6565656')
     const deserializedFarm = deserializeFarm(farm)
     const farmTokenPriceInUsd = deserializedFarm && new BigNumber(deserializedFarm.tokenPriceBusd)
     let lpTokenPrice = BIG_ZERO
 
-    if (deserializedFarm.lpTotalSupply.gt(0) && deserializedFarm.lpTotalInQuoteToken.gt(0)) {
+    if (deserializedFarm.lpTotalSupply.gt(0)) {
       // Total value of base token in LP
       const valueOfBaseTokenInFarm = farmTokenPriceInUsd.times(deserializedFarm.tokenAmountTotal)
       // Double it to get overall value in LP

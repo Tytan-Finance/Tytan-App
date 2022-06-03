@@ -1,11 +1,11 @@
 import { Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
 import Balance from 'components/Balance'
-import cakeAbi from 'config/abi/cake.json'
+import tytanAbi from 'config/abi/tytan.json'
 import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import { useEffect, useState } from 'react'
-import { usePriceCakeBusd } from 'state/farms/hooks'
+import { usePriceCakeBusd, useLpTokenPrice } from 'state/farms/hooks'
 import styled from 'styled-components'
 import { formatBigNumber, formatLocalisedCompactNumber } from 'utils/formatBalance'
 import { multicallv2 } from 'utils/multicall'
@@ -72,62 +72,60 @@ const StyledHeading = styled(Heading)`
   }
 `
 
-const emissionsPerBlock = 14.25
-
-/**
- * User (Planet Finance) built a contract on top of our original manual CAKE pool,
- * but the contract was written in such a way that when we performed the migration from Masterchef v1 to v2, the tokens were stuck.
- * These stuck tokens are forever gone (see their medium post) and can be considered out of circulation."
- * https://planetfinanceio.medium.com/pancakeswap-works-with-planet-to-help-cake-holders-f0d253b435af
- * https://twitter.com/PancakeSwap/status/1523913527626702849
- * https://bscscan.com/tx/0xd5ffea4d9925d2f79249a4ce05efd4459ed179152ea5072a2df73cd4b9e88ba7
- */
-const planetFinanceBurnedTokensWei = BigNumber.from('637407922445268000000000')
-const cakeVault = getCakeVaultV2Contract()
-
 const LiquidityData = () => {
   const { t } = useTranslation()
   const { observerRef, isIntersecting } = useIntersectionObserver()
   const [loadData, setLoadData] = useState(false)
+  const lpSymbol = 'CAKE-BNB LP'
+  const lpPrice = useLpTokenPrice(lpSymbol)
+
+  console.log(lpPrice.toNumber(), '45454')
   const {
-    data: { cakeSupply, burnedBalance, circulatingSupply } = {
-      cakeSupply: 0,
-      burnedBalance: 0,
+    data: { treasury, circulatingSupply, liquidity } = {
+      treasury: 0,
       circulatingSupply: 0,
+      liquidity: 0,
     },
   } = useSWR(
-    loadData ? ['cakeDataRow'] : null,
+    loadData ? ['tytanLiquidityAndTreasury'] : null,
     async () => {
-      const totalSupplyCall = { address: tokens.cake.address, name: 'totalSupply' }
-      const burnedTokenCall = {
-        address: tokens.cake.address,
-        name: 'balanceOf',
-        params: ['0x000000000000000000000000000000000000dEaD'],
+      const totalSupplyCall = { 
+        address: tokens.tytan.address, 
+        name: 'totalSupply' 
       }
-      const [tokenDataResultRaw, totalLockedAmount] = await Promise.all([
-        multicallv2(cakeAbi, [totalSupplyCall, burnedTokenCall], {
+      const lpSupplyCall = { 
+        address: '0x71125dfF884402eFFF470476440946eF04b56180', 
+        name: 'totalSupply' 
+      }
+      const treasuryTokenCall = {
+        address: tokens.tytan.address,
+        name: 'balanceOf',
+        params: ['0xD898A08817F664A3404A3e21f4990937a33b755D'],
+      }
+      const [tokenDataResultRaw] = await Promise.all([
+        multicallv2(tytanAbi, [totalSupplyCall, treasuryTokenCall, lpSupplyCall], {
           requireSuccess: false,
         }),
-        cakeVault.totalLockedAmount(),
       ])
-      const [totalSupply, burned] = tokenDataResultRaw.flat()
+      const [totalSupply, treasuryBalance, lpAmount] = tokenDataResultRaw.flat()
 
-      const totalBurned = planetFinanceBurnedTokensWei.add(burned)
-      const circulating = totalSupply.sub(totalBurned.add(totalLockedAmount))
+      const circulating = totalSupply
 
       return {
-        cakeSupply: totalSupply && burned ? +formatBigNumber(totalSupply.sub(totalBurned)) : 0,
-        burnedBalance: burned ? +formatBigNumber(totalBurned) : 0,
+        treasury: treasuryBalance ? +formatBigNumber(treasuryBalance, 0, 5) : 0,
         circulatingSupply: circulating ? +formatBigNumber(circulating) : 0,
+        liquidity: lpAmount ? +formatBigNumber(lpAmount) : 0,
       }
     },
     {
       refreshInterval: SLOW_INTERVAL,
     },
   )
-  const cakePriceBusd = usePriceCakeBusd()
-  const mcap = cakePriceBusd.times(circulatingSupply)
-  const mcapString = formatLocalisedCompactNumber(mcap.toNumber())
+  const tytanPriceBusd = usePriceCakeBusd()
+  const treasuryCap = tytanPriceBusd.times(treasury)
+  const treasuryString = formatLocalisedCompactNumber(treasuryCap.toNumber())
+  const totalLiquidity = lpPrice.times(liquidity)
+  const totalLiquidityString = formatLocalisedCompactNumber(totalLiquidity.toNumber())
 
   useEffect(() => {
     if (isIntersecting) {
@@ -139,24 +137,24 @@ const LiquidityData = () => {
     <Flex flexDirection={['column', null, null, 'row']} mb='48px'>
       <StyledColumn style={{ gridArea: 'a' }}>
         <StyledText color="textSubtle">{t('Liquidity')}</StyledText>
-        {circulatingSupply ? (
-          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={circulatingSupply} />
+        {totalLiquidity?.gt(0) && totalLiquidityString ? (
+          <StyledHeading color="primary" scale="xl">{t('$%liquidity%', { liquidity: totalLiquidityString })}</StyledHeading>
         ) : (
           <Skeleton height={24} width={126} my="4px" />
         )}
-        <StatusText color="success">+1.5%</StatusText>
+        {/* <StatusText color="success">+1.5%</StatusText> */}
       </StyledColumn>
       <StyledColumn noMarginRight style={{ gridArea: 'b' }}>
         <StyledText color="textSubtle">{t('Treasury')}</StyledText>
-        {cakeSupply ? (
-          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={cakeSupply} />
+        {treasuryCap?.gt(0) && treasuryString ? (
+          <StyledHeading color="primary" scale="xl">{t('$%treasuryCap%', { treasuryCap: treasuryString })}</StyledHeading>
         ) : (
           <>
             <div ref={observerRef} />
             <Skeleton height={24} width={126} my="4px" />
           </>
         )}
-        <StatusText color="failure">-0.5%</StatusText>
+        {/* <StatusText color="failure">-0.5%</StatusText> */}
       </StyledColumn>
     </Flex>
   )

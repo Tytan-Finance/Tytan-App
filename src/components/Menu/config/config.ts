@@ -11,6 +11,8 @@ import {
   NftFillIcon,
   MoreIcon,
   HomeIcon,
+  AccountIcon,
+  AccountFilledIcon
 } from '@pancakeswap/uikit'
 import { ContextApi } from 'contexts/Localization/types'
 import { nftsBaseUrl } from 'views/Nft/market/constants'
@@ -24,11 +26,12 @@ export type ConfigMenuItemsType = Omit<MenuItemsType, 'items'> & { hideSubNav?: 
 
 const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType[] = (t, languageCode) => [
   {
-    label: t('Home'),
-    icon: HomeIcon,
-    href: '/',
+    label: t('Account'),
+    icon: AccountIcon,
+    fillIcon: AccountFilledIcon,
+    href: '/account',
     showItemsOnMobile: false,
-    items:[]
+    items: [],
   },
   {
     label: t('Trade'),
@@ -47,20 +50,13 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
       },
     ],
   },
-  {
-    label: t('Account'),
-    icon: SwapIcon,
-    href: '/account',
-    showItemsOnMobile: false,
-    items: [],
-  },
-  {
-    label: t('Calculator'),
-    icon: SwapIcon,
-    href: '/calculator',
-    showItemsOnMobile: false,
-    items: [],
-  },
+  // {
+  //   label: t('Calculator'),
+  //   icon: SwapIcon,
+  //   href: '/calculator',
+  //   showItemsOnMobile: false,
+  //   items: [],
+  // },
   {
     label: '',
     href: '/info',

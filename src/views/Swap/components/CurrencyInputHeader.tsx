@@ -74,7 +74,7 @@ const CurrencyInputHeader: React.FC<Props> = ({
           </IconButton>
         </Flex>
       </Flex>
-      <Flex alignItems="center">
+      <Flex alignItems="flex-start">
         <Text color="textSubtle" fontSize="14px">
           {subtitle}
         </Text>

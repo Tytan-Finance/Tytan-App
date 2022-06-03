@@ -1,6 +1,7 @@
 import { Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
+import { useWeb3React } from '@web3-react/core'
 import Balance from 'components/Balance'
-import cakeAbi from 'config/abi/cake.json'
+import tytanAbi from 'config/abi/tytan.json'
 import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
@@ -75,38 +76,45 @@ const cakeVault = getCakeVaultV2Contract()
 
 const RebaseInfo = () => {
   const { t } = useTranslation()
+  const { account } = useWeb3React()
   const { observerRef, isIntersecting } = useIntersectionObserver()
   const [loadData, setLoadData] = useState(false)
   const {
-    data: { cakeSupply, burnedBalance, circulatingSupply } = {
-      cakeSupply: 0,
+    data: { tytanBalance, burnedBalance, circulatingSupply } = {
+      tytanBalance: 0,
       burnedBalance: 0,
       circulatingSupply: 0,
     },
   } = useSWR(
-    loadData ? ['cakeDataRow'] : null,
+    loadData ? ['rebaseData'] : null,
     async () => {
-      const totalSupplyCall = { address: tokens.cake.address, name: 'totalSupply' }
-      const burnedTokenCall = {
-        address: tokens.cake.address,
+      const balanceCall = { 
+        address: tokens.tytan.address,
         name: 'balanceOf',
-        params: ['0x000000000000000000000000000000000000dEaD'],
+        params: [account],
       }
-      const [tokenDataResultRaw, totalLockedAmount] = await Promise.all([
-        multicallv2(cakeAbi, [totalSupplyCall, burnedTokenCall], {
+      const burnedTokenCall = {
+        address: tokens.tytan.address,
+        name: 'balanceOf',
+        params: ['0x15E4A5d2Ee7d3836176D9Fb72e12020C068Ca5EF'],
+      }
+      const totalSupplyCall = { 
+        address: tokens.tytan.address,
+        name: 'totalSupply',
+      }
+      const [tokenDataResultRaw] = await Promise.all([
+        multicallv2(tytanAbi, [balanceCall, burnedTokenCall, totalSupplyCall], {
           requireSuccess: false,
-        }),
-        cakeVault.totalLockedAmount(),
+        })
       ])
-      const [totalSupply, burned] = tokenDataResultRaw.flat()
 
-      const totalBurned = planetFinanceBurnedTokensWei.add(burned)
-      const circulating = totalSupply.sub(totalBurned.add(totalLockedAmount))
+      const [totalSupply, burned, total] = tokenDataResultRaw.flat()
+      const circulating = totalSupply.sub(burned)
 
       return {
-        cakeSupply: totalSupply && burned ? +formatBigNumber(totalSupply.sub(totalBurned)) : 0,
-        burnedBalance: burned ? +formatBigNumber(totalBurned) : 0,
-        circulatingSupply: circulating ? +formatBigNumber(circulating) : 0,
+        tytanBalance: totalSupply ? +formatBigNumber(totalSupply, 0, 5) : 0,
+        burnedBalance: burned ? +formatBigNumber(burned, 0, 5) : 0,
+        circulatingSupply: total && burned ? +formatBigNumber(total.sub(burned), 0, 5) : 0,
       }
     },
     {
@@ -129,8 +137,8 @@ const RebaseInfo = () => {
         <Container>
           <StyledColumn>
             <StyledText color="textSubtle">{t('Next Reward Amount:')}</StyledText>
-            {cakeSupply ? (
-              <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={cakeSupply} />
+            {tytanBalance ? (
+              <StyledBalance color="primary"  decimals={2} lineHeight="1.1" bold value={tytanBalance * 0.0004072} />
             ) : (
               <>
                 <div ref={observerRef} />
@@ -138,10 +146,10 @@ const RebaseInfo = () => {
               </>
             )}
           </StyledColumn>
-          <StyledColumn>
+          {/* <StyledColumn>
             <StyledText color="textSubtle">{t('Holders')}</StyledText>
-            <StyledBalance color="primary" decimals={0} lineHeight="1.1" bold value={75000} />
-          </StyledColumn>
+            <StyledBalance color="primary" decimals={0} lineHeight="1.1" bold value={1205} />
+          </StyledColumn> */}
           <StyledColumn>
             <StyledText color="textSubtle">{t('Market cap')}</StyledText>
             {mcap?.gt(0) && mcapString ? (

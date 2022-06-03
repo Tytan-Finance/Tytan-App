@@ -10,7 +10,7 @@ interface CountdownProps {
 }
 
 const Countdown: React.FC<CountdownProps> = ({ nextEventTime, preCountdownText, postCountdownText }) => {
-  const secondsRemaining = useNextRebaseCountdown(nextEventTime)
+  const secondsRemaining = useNextRebaseCountdown()
   const { days, hours, minutes } = getTimePeriods(secondsRemaining)
 
   return (

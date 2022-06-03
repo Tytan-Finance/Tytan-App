@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from "@degenhaus/uikit-fuse";
+import { Box, Button, Flex, Text } from "@pancakeswap/uikit";
 import React, { useState } from "react";
 import styled from "styled-components";
 import Slider from "./Slider";

@@ -1,6 +1,7 @@
 import { Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
 import Balance from 'components/Balance'
-import cakeAbi from 'config/abi/cake.json'
+import { useWeb3React } from '@web3-react/core'
+import tytanAbi from 'config/abi/tytan.json'
 import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
@@ -96,38 +97,33 @@ const RebaseCountDownTimer = () => {
 
 const Earnings = () => {
   const { t } = useTranslation()
+  const { account } = useWeb3React()
   const { observerRef, isIntersecting } = useIntersectionObserver()
   const [loadData, setLoadData] = useState(false)
   const {
-    data: { cakeSupply, burnedBalance, circulatingSupply } = {
-      cakeSupply: 0,
-      burnedBalance: 0,
-      circulatingSupply: 0,
+    data: { dailyEarning, myBalance } = {
+      dailyEarning: 0,
+      myBalance: 0,
     },
   } = useSWR(
-    loadData ? ['cakeDataRow'] : null,
+    loadData ? ['tytanEarnings'] : null,
     async () => {
-      const totalSupplyCall = { address: tokens.cake.address, name: 'totalSupply' }
-      const burnedTokenCall = {
-        address: tokens.cake.address,
+      const balanceTokenCall = {
+        address: tokens.tytan.address,
         name: 'balanceOf',
-        params: ['0x000000000000000000000000000000000000dEaD'],
+        params: [account],
       }
-      const [tokenDataResultRaw, totalLockedAmount] = await Promise.all([
-        multicallv2(cakeAbi, [totalSupplyCall, burnedTokenCall], {
+      const [tokenDataResultRaw] = await Promise.all([
+        multicallv2(tytanAbi, [balanceTokenCall], {
           requireSuccess: false,
         }),
-        cakeVault.totalLockedAmount(),
       ])
-      const [totalSupply, burned] = tokenDataResultRaw.flat()
+      const [userBalance] = tokenDataResultRaw.flat()
 
-      const totalBurned = planetFinanceBurnedTokensWei.add(burned)
-      const circulating = totalSupply.sub(totalBurned.add(totalLockedAmount))
 
       return {
-        cakeSupply: totalSupply && burned ? +formatBigNumber(totalSupply.sub(totalBurned)) : 0,
-        burnedBalance: burned ? +formatBigNumber(totalBurned) : 0,
-        circulatingSupply: circulating ? +formatBigNumber(circulating) : 0,
+        dailyEarning: userBalance ? +formatBigNumber(userBalance, 0, 5) : 0,
+        myBalance: userBalance ? +formatBigNumber(userBalance, 0, 5) : 0,
       }
     },
     {
@@ -135,8 +131,10 @@ const Earnings = () => {
     },
   )
   const cakePriceBusd = usePriceCakeBusd()
-  const mcap = cakePriceBusd.times(circulatingSupply)
+  const mcap = cakePriceBusd.times(myBalance)
   const mcapString = formatLocalisedCompactNumber(mcap.toNumber())
+  const daily = dailyEarning * 1.97 / 100
+  const dailyEarningsInUsd = cakePriceBusd.times(daily)
 
   useEffect(() => {
     if (isIntersecting) {
@@ -146,30 +144,21 @@ const Earnings = () => {
 
   return (
     <Flex flexDirection={['column', null, null, 'row']} mb='48px'>
-      <StyledColumn style={{ gridArea: 'a' }}>
-        <StyledText color="textSubtle">{t('Your Balance')}</StyledText>
-        {circulatingSupply ? (
-          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={circulatingSupply} />
-        ) : (
-          <Skeleton height={24} width={126} my="4px" />
-        )}
-        <StyledText color="textSubtle">{t('May 30th 2022')}</StyledText>
-      </StyledColumn>
       <StyledColumn style={{ gridArea: 'b' }}>
         <StyledText color="textSubtle">{t('Your Earnings (Daily)')}</StyledText>
-        {cakeSupply ? (
-          <StyledBalance color="primary"  decimals={0} lineHeight="1.1" bold value={cakeSupply} />
+        {dailyEarning ? (
+          <StyledBalance color="primary"  decimals={2} lineHeight="1.1" bold value={dailyEarningsInUsd.toNumber()} unit='$' />
         ) : (
           <>
             <div ref={observerRef} />
             <Skeleton height={24} width={126} my="4px" />
           </>
         )}
-        <StyledText color="textSubtle">{t('18.00 TYTAN')}</StyledText>
+        <StyledText color="textSubtle">{`${daily.toFixed(2)} TYTAN`}</StyledText>
       </StyledColumn>
       <StyledColumn noMarginRight style={{ gridArea: 'c' }}>
         <StyledText color="textSubtle">{t('Next Rebase')}</StyledText>
-        {cakeSupply ? (
+        {dailyEarning ? (
           <RebaseCountDownTimer />
         ) : (
           <>
