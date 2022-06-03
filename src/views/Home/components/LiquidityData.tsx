@@ -114,18 +114,17 @@ const LiquidityData = () => {
         params: ['0x15E4A5d2Ee7d3836176D9Fb72e12020C068Ca5EF'],
       }
       const [tokenDataResultRaw] = await Promise.all([
-        multicallv2(tytanAbi, [totalSupplyCall, treasuryTokenCall, lpSupplyCall, afterBurnerTokenCall], {
+        multicallv2(tytanAbi, [treasuryTokenCall, lpSupplyCall, afterBurnerTokenCall], {
           requireSuccess: false,
         }),
       ])
-      const [totalSupply, treasuryBalance, lpAmount, afterburnerAmount] = tokenDataResultRaw.flat()
+      const [treasuryBalance, lpAmount, afterburnerAmount] = tokenDataResultRaw.flat()
       const response = await fetch('https://api.bscscan.com/api?module=account&action=balance&address=0xD898A08817F664A3404A3e21f4990937a33b755D&apikey=N8TEIA1BQ4Z3KB7HSMDY1RGTAW7MPVRWRA')
       const responseData: BscScanResponse = await response.json()
       const treasuryBNBBalance = BigNumber.from(responseData.result)
       const tifresponse = await fetch('https://api.bscscan.com/api?module=account&action=balance&address=0xFBFb683D3e5FCeC7EaE5780cFd555C4DF36e0207&apikey=N8TEIA1BQ4Z3KB7HSMDY1RGTAW7MPVRWRA')
       const tifResponseData: BscScanResponse = await tifresponse.json()
       const tifBNBBalance = BigNumber.from(tifResponseData.result)
-      const circulating = totalSupply
 
       return {
         treasury: treasuryBalance ? +formatBigNumber(treasuryBalance, 0, 5) : 0,
