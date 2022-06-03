@@ -29,6 +29,7 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
     label: t('Dashboard'),
     icon: HomeIcon,
     href: '/',
+    showItemsOnMobile: false,
     items:[]
   },
   {
