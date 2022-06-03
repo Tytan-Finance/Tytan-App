@@ -5,7 +5,7 @@ export const DEFAULT_META: PageMeta = {
   title: 'Tytan',
   description:
     "We've travelled the wormholes of the rebase galaxy far & wide. Only to find the future is TYTAN. With immediate utility on launch. Strap in and feel the G-force of rebase at its finest.",
-  image: 'https://tytan.finance/images/hero.png',
+  image: 'https://app.tytan.finance/images/hero.png',
 }
 
 export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
