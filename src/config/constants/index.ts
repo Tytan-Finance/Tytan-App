@@ -122,7 +122,7 @@ export const GELATO_NATIVE = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const GELATO_HANDLER = 'pancakeswap'
 export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = BigNumber.from(500000)
 
-export const EXCHANGE_DOCS_URLS = 'https://docs.pancakeswap.finance/products/pancakeswap-exchange'
-export const LIMIT_ORDERS_DOCS_URL = 'https://docs.pancakeswap.finance/products/pancakeswap-exchange/limit-orders'
+export const EXCHANGE_DOCS_URLS = 'https://docs.tytan.finance/'
+export const LIMIT_ORDERS_DOCS_URL = 'https://docs.tytan.finance/'
 
 export const GALAXY_NFT_CAMPAIGN_ID = 'GCpp2UUxqQ'
