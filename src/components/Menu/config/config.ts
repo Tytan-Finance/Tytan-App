@@ -66,9 +66,10 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
   // },
   {
     label: '',
-    href: '/info',
+    href: '',
     icon: MoreIcon,
     hideSubNav: true,
+    type: DropdownMenuItemType.EXTERNAL_LINK,
     items: [
       {
         label: t('Chart'),
