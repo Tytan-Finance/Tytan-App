@@ -79,7 +79,11 @@ const StyledFields = styled.div`
   }
 
   .rc-slider-track {
-    background-color: ${({ theme }) => theme.colors.backgroundAlt2};
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  .rc-slider-rail {
+    background-color: ${({ theme }) => theme.colors.backgroundDisabled};
   }
 
   .rc-slider-dot-active {
