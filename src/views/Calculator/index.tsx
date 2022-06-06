@@ -216,7 +216,7 @@ const Calculator: React.FC = () => {
               </div>
               <div>
                 <Text>Your Current Wealth</Text>
-                <Text bold fontSize={32} color="primary">{account ? `$${tytanPrice.multipliedBy(myBalance).toString()}` : "Connect Wallet"}</Text>
+                <Text bold fontSize={32} color="primary">{account ? `$${tytanPrice.multipliedBy(myBalance).toFixed(2)}` : "Connect Wallet"}</Text>
               </div>
               <div>
                 <Text>EST. TYTAN Rewards</Text>
