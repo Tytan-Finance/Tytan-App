@@ -12,11 +12,12 @@ import { formatBigNumber, formatLocalisedCompactNumber } from 'utils/formatBalan
 import Earned from './components/Earned'
 import { SLOW_INTERVAL } from 'config/constants'
 import { Flex, Text, Input } from '@pancakeswap/uikit'
-import { Slider } from 'components/Slider'
 import { InputGroup } from './components/Input'
 import BigNumber from 'bignumber.js'
 import { usePriceCakeBusd } from 'state/farms/hooks'
 import useSWR from 'swr'
+import Slider, { createSliderWithTooltip } from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 const StyledHeroSection = styled(PageSection)`
   padding-top: 16px;
@@ -68,13 +69,36 @@ const StyledFields = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-gap: 24px 14px;
+
+  .slider {
+    height: 72px;
+  }
+
+  .rc-slider-mark-text {
+    max-width: min-content;
+  }
+
+  .rc-slider-track {
+    background-color: ${({ theme }) => theme.colors.backgroundAlt2};
+  }
+
+  .rc-slider-dot-active {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  .rc-slider-handle {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `
 
 const BIG_ZERO = new BigNumber(0)
+const RcSlider = createSliderWithTooltip(Slider)
 
 const Calculator: React.FC = () => {
   const { theme } = useTheme()
   const { account } = useWeb3React()
+
+
 
   const {
     data: { myBalance } = {
@@ -108,7 +132,7 @@ const Calculator: React.FC = () => {
   const tytanPrice = usePriceCakeBusd()
   const currentApy = 125124.33;
 
-  const [stakeDuration, setStakeDuration] = useState(0);
+  const [stakeDuration, setStakeDuration] = useState(7);
 
   const [tytanAmount, setTytanAmount] = useState(`${myBalance}` ?? "0");
   const [apy, setApy] = useState(`${currentApy}`);
@@ -186,16 +210,20 @@ const Calculator: React.FC = () => {
                     onChange={(event) => setTytanFuturePrice(event.target.value)} />
                 </InputGroup>
               </div>
-              <div style={{ gridColumn: '1/span 2' }}>
+              <div style={{ gridColumn: '1/span 2', padding: "6px 18px" }}>
                 <Text>Staking Duration</Text>
-                <Slider
-                  name="Stake Duration"
-                  min={0}
-                  max={120}
+                <RcSlider
+                  min={1}
+                  max={360}
                   step={1}
-                  onValueChanged={(val) => { setStakeDuration(val) }}
+                  onChange={(val) => { setStakeDuration(val[0] ?? val) }}
                   value={stakeDuration}
-                  valueLabel={`${stakeDuration.toLocaleString()} days`} />
+                  marks={{ 7: '1 week', 30: '30 days', 90: '3 months', 180: '6 months', 360: '12 months' }}
+                  className="slider"
+                  tipFormatter={(n) => `${n} day${n > 1 ? 's' : ''}`}
+                // valueLabel={`${stakeDuration.toLocaleString()} day${stakeDuration > 1 ? 's' : ''}`}
+                />
+
               </div>
 
             </StyledFields>
