@@ -21,7 +21,7 @@ const getPadding = (scale: Scales, hasIcon: boolean) => {
 
 const StyledInputGroup = styled(Box) <{ scale: Scales; }>`
   ${Input} {
-    padding-right: ${({ scale }) => getPadding(scale, true)};
+    padding-right: 64px;
   }
 `;
 
@@ -48,7 +48,7 @@ const InputGroup = ({ scale = scales.MD, valueActionLabel, valueAction, children
     {cloneElement(children, { scale })}
     {valueAction && (
       <ValueAction scale={scale} onClick={valueAction}>
-        <Text fontSize="12px">{valueActionLabel}</Text>
+        <Text fontSize="10px">{valueActionLabel}</Text>
       </ValueAction>
     )}
   </StyledInputGroup>
