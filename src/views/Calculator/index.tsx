@@ -66,7 +66,7 @@ const StyledText = styled(Text)`
 const StyledFields = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-gap: 24px 14px;
 `
 
@@ -129,7 +129,7 @@ const Calculator: React.FC = () => {
   const potentialReturn = useMemo(() => {
     let result = (new BigNumber(estimatedTytanRewards)).multipliedBy(tytanFuturePrice)
     return result.isNaN() ? BIG_ZERO : result;
-  }, [apy, stakeDuration, tytanAmount])
+  }, [estimatedTytanRewards, tytanFuturePrice])
 
   const { t } = useTranslation()
   return (
@@ -155,7 +155,7 @@ const Calculator: React.FC = () => {
                   <Input
                     value={tytanAmount}
                     type="number"
-                    onChange={(event) => setTytanAmount(event.target.value ?? '0')} />
+                    onChange={(event) => setTytanAmount(Number(event.target.value) < 9999999999 ? event.target.value : tytanAmount)} />
                 </InputGroup>
 
               </div>
@@ -206,7 +206,7 @@ const Calculator: React.FC = () => {
             <StyledFields>
               <div>
                 <Text>Your Initial Investment</Text>
-                <Text bold fontSize={32} color="primary">${initialInvestment?.decimalPlaces(2)?.toString() ?? 0}</Text>
+                <Text bold fontSize={32} color="primary" overflow={"hidden"}>${initialInvestment?.decimalPlaces(2)?.toString() ?? 0}</Text>
               </div>
               <div>
                 <Text>Your Current Wealth</Text>
@@ -214,11 +214,11 @@ const Calculator: React.FC = () => {
               </div>
               <div>
                 <Text>EST. TYTAN Rewards</Text>
-                <Text bold fontSize={32} color="primary">{estimatedTytanRewards.toFixed(2)}</Text>
+                <Text bold fontSize={32} color="primary" overflow={"hidden"}>{estimatedTytanRewards.toFixed(2)}</Text>
               </div>
               <div>
                 <Text>Potential Return</Text>
-                <Text bold fontSize={32} color="primary">${potentialReturn.toFixed(2)}</Text>
+                <Text bold fontSize={32} color="primary" overflow={"hidden"}>${potentialReturn.toFixed(2)}</Text>
               </div>
             </StyledFields>
           </StyledColumn>
