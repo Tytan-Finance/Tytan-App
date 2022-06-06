@@ -9,14 +9,14 @@ import { multicallv2 } from 'utils/multicall'
 import tytanAbi from 'config/abi/tytan.json'
 import tokens from 'config/constants/tokens'
 import { formatBigNumber, formatLocalisedCompactNumber } from 'utils/formatBalance'
-import Earned from './components/Earned'
 import { SLOW_INTERVAL } from 'config/constants'
 import { Flex, Text, Input } from '@pancakeswap/uikit'
-import { InputGroup } from './components/Input'
 import BigNumber from 'bignumber.js'
 import { usePriceCakeBusd } from 'state/farms/hooks'
 import useSWR from 'swr'
-import Slider, { createSliderWithTooltip } from 'rc-slider';
+import Earned from './components/Earned'
+import { InputGroup } from './components/Input'
+import Slider, { createSliderWithTooltip } from 'rc-slider'
 import 'rc-slider/assets/index.css';
 
 const StyledHeroSection = styled(PageSection)`
