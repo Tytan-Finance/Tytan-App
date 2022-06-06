@@ -116,25 +116,19 @@ const Calculator: React.FC = () => {
   const [tytanFuturePrice, setTytanFuturePrice] = useState(tytanPrice.toFixed(5));
 
   const initialInvestment = useMemo(() => {
-    try {
-      return new BigNumber(tytanAmount).multipliedBy(tytanPurchasePrice)
-    } catch (e) { }
-    return BIG_ZERO
+    let result = new BigNumber(tytanAmount ?? 0).multipliedBy(tytanPurchasePrice ?? 0)
+    return result.isNaN() ? BIG_ZERO : result;
   }, [tytanAmount, tytanPurchasePrice])
 
   const estimatedTytanRewards = useMemo(() => {
-    try {
-      let dailyRate = new BigNumber((Number(apy) / 100) ** (1 / 365))
-      return dailyRate.pow(stakeDuration).multipliedBy(tytanAmount)
-    } catch (e) { }
-    return BIG_ZERO
+    let dailyRate = new BigNumber((Number(apy) / 100) ** (1 / 365))
+    let result = dailyRate.pow(stakeDuration).multipliedBy(tytanAmount)
+    return result.isNaN() ? BIG_ZERO : result;
   }, [apy, stakeDuration, tytanAmount])
 
   const potentialReturn = useMemo(() => {
-    try {
-      return (new BigNumber(estimatedTytanRewards)).multipliedBy(tytanFuturePrice)
-    } catch (e) { }
-    return BIG_ZERO
+    let result = (new BigNumber(estimatedTytanRewards)).multipliedBy(tytanFuturePrice)
+    return result.isNaN() ? BIG_ZERO : result;
   }, [apy, stakeDuration, tytanAmount])
 
   const { t } = useTranslation()
