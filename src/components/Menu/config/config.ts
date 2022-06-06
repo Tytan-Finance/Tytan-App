@@ -57,13 +57,13 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
       },
     ],
   },
-  // {
-  //   label: t('Calculator'),
-  //   icon: SwapIcon,
-  //   href: '/calculator',
-  //   showItemsOnMobile: false,
-  //   items: [],
-  // },
+  {
+    label: t('Calculator'),
+    icon: SwapIcon,
+    href: '/calculator',
+    showItemsOnMobile: false,
+    items: [],
+  },
   {
     label: '',
     href: '',
