@@ -14,9 +14,9 @@ import { Flex, Text, Input } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import { usePriceCakeBusd } from 'state/farms/hooks'
 import useSWR from 'swr'
+import Slider, { createSliderWithTooltip } from 'rc-slider'
 import Earned from './components/Earned'
 import { InputGroup } from './components/Input'
-import Slider, { createSliderWithTooltip } from 'rc-slider'
 import 'rc-slider/assets/index.css';
 
 const StyledHeroSection = styled(PageSection)`
@@ -144,18 +144,18 @@ const Calculator: React.FC = () => {
   const [tytanFuturePrice, setTytanFuturePrice] = useState(tytanPrice.toFixed(5));
 
   const initialInvestment = useMemo(() => {
-    let result = new BigNumber(tytanAmount ?? 0).multipliedBy(tytanPurchasePrice ?? 0)
+    const result = new BigNumber(tytanAmount ?? 0).multipliedBy(tytanPurchasePrice ?? 0)
     return result.isNaN() ? BIG_ZERO : result;
   }, [tytanAmount, tytanPurchasePrice])
 
   const estimatedTytanRewards = useMemo(() => {
-    let dailyRate = new BigNumber((Number(apy) / 100) ** (1 / 365))
-    let result = dailyRate.pow(stakeDuration).multipliedBy(tytanAmount)
+    const dailyRate = new BigNumber((Number(apy) / 100) ** (1 / 365))
+    const result = dailyRate.pow(stakeDuration).multipliedBy(tytanAmount)
     return result.isNaN() ? BIG_ZERO : result;
   }, [apy, stakeDuration, tytanAmount])
 
   const potentialReturn = useMemo(() => {
-    let result = (new BigNumber(estimatedTytanRewards)).multipliedBy(tytanFuturePrice)
+    const result = (new BigNumber(estimatedTytanRewards)).multipliedBy(tytanFuturePrice)
     return result.isNaN() ? BIG_ZERO : result;
   }, [estimatedTytanRewards, tytanFuturePrice])
 
@@ -238,24 +238,23 @@ const Calculator: React.FC = () => {
             <StyledFields>
               <div>
                 <Text>Your Initial Investment</Text>
-                <Text bold fontSize={32} color="primary" overflow={"hidden"}>${initialInvestment?.decimalPlaces(2)?.toString() ?? 0}</Text>
+                <Text bold fontSize={32} color="primary" overflow="hidden">${initialInvestment?.decimalPlaces(2)?.toString() ?? 0}</Text>
               </div>
               <div>
                 <Text>Your Current Wealth</Text>
-                <Text bold fontSize={32} color="primary">{account ? `$${tytanPrice.multipliedBy(myBalance).toFixed(2)}` : "Connect Wallet"}</Text>
+                <Text bold fontSize={32} color="primary">{account ? `$${tytanPrice.multipliedBy(myBalance).toFixed(2)}` : "$0"}</Text>
               </div>
               <div>
                 <Text>EST. TYTAN Rewards</Text>
-                <Text bold fontSize={32} color="primary" overflow={"hidden"}>{estimatedTytanRewards.toFixed(2)}</Text>
+                <Text bold fontSize={32} color="primary" overflow="hidden">{estimatedTytanRewards.toFixed(2)}</Text>
               </div>
               <div>
                 <Text>Potential Return</Text>
-                <Text bold fontSize={32} color="primary" overflow={"hidden"}>${potentialReturn.toFixed(2)}</Text>
+                <Text bold fontSize={32} color="primary" overflow="hidden">${potentialReturn.toFixed(2)}</Text>
               </div>
             </StyledFields>
           </StyledColumn>
         </Flex>
-        <Earned />
       </StyledHeroSection>
     </>
   )

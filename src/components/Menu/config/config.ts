@@ -11,6 +11,7 @@ import {
   NftFillIcon,
   MoreIcon,
   HomeIcon,
+  CalculatorIcon,
   AccountIcon,
   AccountFilledIcon
 } from '@pancakeswap/uikit'
@@ -59,7 +60,7 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
   },
   {
     label: t('Calculator'),
-    icon: SwapIcon,
+    icon: CalculatorIcon,
     href: '/calculator',
     showItemsOnMobile: false,
     items: [],
