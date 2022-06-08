@@ -64,6 +64,18 @@ const StyledText = styled(Text)`
   }
 `
 
+const ResultText = styled(Text)`
+  font-weight: bold;
+  font-size: 24px;
+  color: ${({ theme }) => theme.colors.primary};
+  overflow: hidden;
+
+  ${({ theme }) => theme.mediaQueries.sm
+  } {
+    font-size: 32px;
+  }
+`
+
 const StyledFields = styled.div`
   width: 100%;
   display: grid;
@@ -238,19 +250,19 @@ const Calculator: React.FC = () => {
             <StyledFields>
               <div>
                 <Text>Your Initial Investment</Text>
-                <Text bold fontSize={32} color="primary" overflow="hidden">${initialInvestment?.decimalPlaces(2)?.toString() ?? 0}</Text>
+                <ResultText>${initialInvestment?.decimalPlaces(2)?.toString() ?? 0}</ResultText>
               </div>
               <div>
                 <Text>Your Current Wealth</Text>
-                <Text bold fontSize={32} color="primary">{account ? `$${tytanPrice.multipliedBy(myBalance).toFixed(2)}` : "$0"}</Text>
+                <ResultText>{account ? `$${tytanPrice.multipliedBy(myBalance).toFixed(2)}` : "$0"}</ResultText>
               </div>
               <div>
                 <Text>EST. TYTAN Rewards</Text>
-                <Text bold fontSize={32} color="primary" overflow="hidden">{estimatedTytanRewards.toFixed(2)}</Text>
+                <ResultText>{estimatedTytanRewards.toFixed(2)}</ResultText>
               </div>
               <div>
                 <Text>Potential Return</Text>
-                <Text bold fontSize={32} color="primary" overflow="hidden">${potentialReturn.toFixed(2)}</Text>
+                <ResultText>${potentialReturn.toFixed(2)}</ResultText>
               </div>
             </StyledFields>
           </StyledColumn>
