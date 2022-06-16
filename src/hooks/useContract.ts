@@ -35,9 +35,11 @@ import {
   getErc721CollectionContract,
   getBunnySpecialXmasContract,
   getGalaxyNTFClaimingContract,
+  getWTytanContract,
+  getTytanContract
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
-import { Erc20, Erc20Bytes32, Multicall, Weth, Cake, Erc721collection, CakeVaultV2 } from 'config/abi/types'
+import { Erc20, Erc20Bytes32, Multicall, Weth, Cake, Erc721collection, CakeVaultV2, Tytan, Wtytan } from 'config/abi/types'
 
 // Imports below migrated from Exchange useContract.ts
 import { Contract } from '@ethersproject/contracts'
@@ -92,6 +94,28 @@ export const useCake = (): { reader: Cake; signer: Cake } => {
     () => ({
       reader: getCakeContract(null),
       signer: getCakeContract(getProviderOrSigner(library, account)),
+    }),
+    [account, library],
+  )
+}
+
+export const useWTytan = (): { reader: Wtytan; signer: Wtytan } => {
+  const { account, library } = useActiveWeb3React()
+  return useMemo(
+    () => ({
+      reader: getWTytanContract(null),
+      signer: getWTytanContract(getProviderOrSigner(library, account)),
+    }),
+    [account, library],
+  )
+}
+
+export const useTytan = (): { reader: Tytan; signer: Tytan } => {
+  const { account, library } = useActiveWeb3React()
+  return useMemo(
+    () => ({
+      reader: getTytanContract(null),
+      signer: getTytanContract(getProviderOrSigner(library, account)),
     }),
     [account, library],
   )
