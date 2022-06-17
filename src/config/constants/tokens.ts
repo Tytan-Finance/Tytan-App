@@ -40,7 +40,7 @@ export const mainnetTokens = defineTokens({
   ),
   wtytan: new Token(
     MAINNET,
-    '0x4F265c54175bE3C9518f6077D328f288F34385DB',
+    '0x3593d409484e36aAd862101054FbDBe1C9a4fC9b',
     18,
     'wTYTAN',
     'Wrapped TYTAN',
@@ -2138,6 +2138,22 @@ export const testnetTokens = defineTokens({
     'CAKE',
     'PancakeSwap Token',
     'https://pancakeswap.finance/',
+  ),
+  tytan: new Token(
+    TESTNET,
+    '0x00824ed7c5AAbCC60e34F68CCd7c987f1353F629',
+    5,
+    'TYTAN',
+    'Tytan',
+    'https://tytan.finance/',
+  ),
+  wtytan: new Token(
+    TESTNET,
+    '0x672D3ECE20a7AFDe9BC1653141B4a30330028354',
+    18,
+    'wTYTAN',
+    'Wrapped TYTAN',
+    'https://tytan.finance/',
   ),
   busd: new Token(
     TESTNET,

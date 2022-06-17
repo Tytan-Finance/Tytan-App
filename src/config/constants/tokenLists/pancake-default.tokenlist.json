@@ -25,6 +25,14 @@
       "chainId": 56,
       "decimals": 5,
       "logoURI": "https://orbitalswap.com/images/tokens/0x912F594Fd096E67e0c0A18D496A9f70E3171c330.png"
+    },
+    {
+      "name": "Wrapped TYTAN",
+      "symbol": "wTYTAN",
+      "address": "0x3593d409484e36aAd862101054FbDBe1C9a4fC9b",
+      "chainId": 56,
+      "decimals": 18,
+      "logoURI": "https://orbitalswap.com/images/tokens/0x3593d409484e36aAd862101054FbDBe1C9a4fC9b.png"
     }
   ]
 }

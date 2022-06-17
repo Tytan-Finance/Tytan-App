@@ -47,6 +47,7 @@ import erc721Abi from 'config/abi/erc721.json'
 import lpTokenAbi from 'config/abi/lpToken.json'
 import cakeAbi from 'config/abi/cake.json'
 import wtytanAbi from 'config/abi/wtytan.json'
+import tytanAbi from 'config/abi/tytan.json'
 import ifoV1Abi from 'config/abi/ifoV1.json'
 import ifoV2Abi from 'config/abi/ifoV2.json'
 import pointCenterIfo from 'config/abi/pointCenterIfo.json'
@@ -160,7 +161,7 @@ export const getWTytanContract = (signer?: Signer | Provider) => {
   return getContract(wtytanAbi, tokens.wtytan.address, signer) as Wtytan
 }
 export const getTytanContract = (signer?: Signer | Provider) => {
-  return getContract(wtytanAbi, tokens.tytan.address, signer) as Tytan
+  return getContract(tytanAbi, tokens.tytan.address, signer) as Tytan
 }
 export const getProfileContract = (signer?: Signer | Provider) => {
   return getContract(profileABI, getPancakeProfileAddress(), signer) as PancakeProfile

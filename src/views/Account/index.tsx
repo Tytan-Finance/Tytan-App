@@ -8,7 +8,6 @@ import styled from 'styled-components'
 import Earned from './components/Earned'
 import Earnings from './components/Earnings'
 import RebaseInfo from './components/RebaseInfo'
-import WrapTytan from './components/WrapTytan'
 
 const StyledHeroSection = styled(PageSection)`
   padding-top: 16px;
@@ -20,7 +19,6 @@ const StyledHeroSection = styled(PageSection)`
 
 const Account: React.FC = () => {
   const { theme } = useTheme()
-  const { account } = useWeb3React()
 
 
   const { t } = useTranslation()
@@ -40,7 +38,6 @@ const Account: React.FC = () => {
         <Earned />
         <Earnings />
         <RebaseInfo />
-        <WrapTytan />
       </StyledHeroSection>
     </>
   )
