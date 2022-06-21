@@ -101,3 +101,13 @@ export const getNftSaleAddress = () => {
 export const getPancakeSquadAddress = () => {
   return getAddress(addresses.pancakeSquad)
 }
+
+export const getStakePrizePoolAddress = () => {
+  return getAddress(addresses.stakePrizePool)
+}
+export const getTokenFaucetAddress = () => {
+  return getAddress(addresses.tokenFaucet)
+}
+export const getMultipleWinnersAddress = () => {
+  return getAddress(addresses.multipleWinners)
+}

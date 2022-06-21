@@ -35,6 +35,9 @@ import {
   getTradingCompetitionAddressMoD,
   getBunnySpecialXmasAddress,
   getGalaxyNFTClaimingAddress,
+  getStakePrizePoolAddress,
+  getTokenFaucetAddress,
+  getMultipleWinnersAddress
 } from 'utils/addressHelpers'
 
 // ABI
@@ -76,6 +79,9 @@ import nftMarketAbi from 'config/abi/nftMarket.json'
 import nftSaleAbi from 'config/abi/nftSale.json'
 import pancakeSquadAbi from 'config/abi/pancakeSquad.json'
 import erc721CollectionAbi from 'config/abi/erc721collection.json'
+import stakePrizePoolAbi from 'config/abi/stakePrizePool.json'
+import tokenFaucetAbi from 'config/abi/tokenFaucet.json'
+import multipleWinnersAbi from 'config/abi/multipleWinners.json'
 
 // Types
 import type {
@@ -115,7 +121,10 @@ import type {
   CakeVaultV2,
   TradingCompetitionMobox,
   TradingCompetitionMoD,
+  StakePrizePool,
+  TokenFaucet
 } from 'config/abi/types'
+import { MultipleWinners } from 'config/abi/types/MultipleWinners'
 
 export const getContract = (abi: any, address: string, signer?: Signer | Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider
@@ -250,4 +259,14 @@ export const getPancakeSquadContract = (signer?: Signer | Provider) => {
 }
 export const getErc721CollectionContract = (signer?: Signer | Provider, address?: string) => {
   return getContract(erc721CollectionAbi, address, signer) as Erc721collection
+}
+
+export const getStakePrizePoolContract = (signer?: Signer | Provider) => {
+  return getContract(stakePrizePoolAbi, getStakePrizePoolAddress(), signer) as StakePrizePool
+}
+export const getTokenFaucetContract = (signer?: Signer | Provider) => {
+  return getContract(tokenFaucetAbi, getTokenFaucetAddress(), signer) as TokenFaucet
+}
+export const getMultipleWinnersContract = (signer?: Signer | Provider) => {
+  return getContract(multipleWinnersAbi, getMultipleWinnersAddress(), signer) as MultipleWinners
 }

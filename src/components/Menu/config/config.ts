@@ -66,6 +66,13 @@ const config: (t: ContextApi['t'], languageCode?: string) => ConfigMenuItemsType
     items: [],
   },
   {
+    label: t('Play'),
+    icon: CalculatorIcon,
+    href: '/play',
+    showItemsOnMobile: false,
+    items: [],
+  },
+  {
     label: '',
     href: '',
     icon: MoreIcon,

@@ -115,4 +115,20 @@ export default {
     56: '0x0a8901b0E25DEb55A87524f0cC164E9644020EBA',
     97: '0xfC0c3F11fDA72Cb9A56F28Ec8D44C0ae4B3ABF86',
   },
+  stakePrizePool: {
+    56: '0xb5ABb12bDd86D08A89984f4d5F6d5E6CE8d7EFc9',
+    97: ''
+  },
+  tokenFaucet: {
+    56: '0x189Aa7ECE2502B11b31759DC724ec5adb80c0019',
+    97: ''
+  },
+  multipleWinners: {
+    56: '0xA50Aeb41702F43958664C8375488c7411364Ac07',
+    97: ''
+  },
+  playTicket: {
+    56: '0x17F427202D3DA688Dadf72E52F907647a9B0661C',
+    97: ''
+  }
 }

@@ -35,6 +35,9 @@ import {
   getErc721CollectionContract,
   getBunnySpecialXmasContract,
   getGalaxyNTFClaimingContract,
+  getStakePrizePoolContract,
+  getTokenFaucetContract,
+  getMultipleWinnersContract
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 import { Erc20, Erc20Bytes32, Multicall, Weth, Cake, Erc721collection, CakeVaultV2 } from 'config/abi/types'
@@ -289,6 +292,33 @@ export const useErc721CollectionContract = (
     }),
     [account, library, collectionAddress],
   )
+}
+
+export const useStakePrizePoolContract = (withSignerIfPossible = true) => {
+  const { library, account } = useActiveWeb3React()
+  const signer = useMemo(
+    () => (withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [withSignerIfPossible, library, account],
+  )
+  return useMemo(() => getStakePrizePoolContract(signer), [signer])
+}
+
+export const useTokenFaucetContract = (withSignerIfPossible = true) => {
+  const { library, account } = useActiveWeb3React()
+  const signer = useMemo(
+    () => (withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [withSignerIfPossible, library, account],
+  )
+  return useMemo(() => getTokenFaucetContract(signer), [signer])
+}
+
+export const useMultipleWinners = (withSignerIfPossible = true) => {
+  const { library, account } = useActiveWeb3React()
+  const signer = useMemo(
+    () => (withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [withSignerIfPossible, library, account],
+  )
+  return useMemo(() => getMultipleWinnersContract(signer), [signer])
 }
 
 // Code below migrated from Exchange useContract.ts
