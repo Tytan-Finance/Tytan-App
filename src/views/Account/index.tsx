@@ -19,7 +19,6 @@ const StyledHeroSection = styled(PageSection)`
 
 const Account: React.FC = () => {
   const { theme } = useTheme()
-  const { account } = useWeb3React()
 
 
   const { t } = useTranslation()

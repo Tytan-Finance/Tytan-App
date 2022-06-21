@@ -38,6 +38,14 @@ export const mainnetTokens = defineTokens({
     'Tytan',
     'https://tytan.finance/',
   ),
+  wtytan: new Token(
+    MAINNET,
+    '0x3593d409484e36aAd862101054FbDBe1C9a4fC9b',
+    18,
+    'wTYTAN',
+    'Wrapped TYTAN',
+    'https://tytan.finance/',
+  ),
   gmi: new Token(MAINNET, '0x93D8d25E3C9A847a5Da79F79ecaC89461FEcA846', 18, 'GMI', 'Gamifi', 'https://gamifi.gg/'),
   tlos: new Token(MAINNET, '0xb6C53431608E626AC81a9776ac3e999c5556717c', 18, 'TLOS', 'Telos', 'https://www.telos.net/'),
   beta: new Token(
@@ -2130,6 +2138,22 @@ export const testnetTokens = defineTokens({
     'CAKE',
     'PancakeSwap Token',
     'https://pancakeswap.finance/',
+  ),
+  tytan: new Token(
+    TESTNET,
+    '0x00824ed7c5AAbCC60e34F68CCd7c987f1353F629',
+    5,
+    'TYTAN',
+    'Tytan',
+    'https://tytan.finance/',
+  ),
+  wtytan: new Token(
+    TESTNET,
+    '0x672D3ECE20a7AFDe9BC1653141B4a30330028354',
+    18,
+    'wTYTAN',
+    'Wrapped TYTAN',
+    'https://tytan.finance/',
   ),
   busd: new Token(
     TESTNET,

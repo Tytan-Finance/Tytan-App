@@ -49,6 +49,8 @@ import bep20Abi from 'config/abi/erc20.json'
 import erc721Abi from 'config/abi/erc721.json'
 import lpTokenAbi from 'config/abi/lpToken.json'
 import cakeAbi from 'config/abi/cake.json'
+import wtytanAbi from 'config/abi/wtytan.json'
+import tytanAbi from 'config/abi/tytan.json'
 import ifoV1Abi from 'config/abi/ifoV1.json'
 import ifoV2Abi from 'config/abi/ifoV2.json'
 import pointCenterIfo from 'config/abi/pointCenterIfo.json'
@@ -122,7 +124,9 @@ import type {
   TradingCompetitionMobox,
   TradingCompetitionMoD,
   StakePrizePool,
-  TokenFaucet
+  TokenFaucet,
+  Tytan,
+  Wtytan
 } from 'config/abi/types'
 import { MultipleWinners } from 'config/abi/types/MultipleWinners'
 
@@ -161,6 +165,12 @@ export const getPointCenterIfoContract = (signer?: Signer | Provider) => {
 }
 export const getCakeContract = (signer?: Signer | Provider) => {
   return getContract(cakeAbi, tokens.cake.address, signer) as Cake
+}
+export const getWTytanContract = (signer?: Signer | Provider) => {
+  return getContract(wtytanAbi, tokens.wtytan.address, signer) as Wtytan
+}
+export const getTytanContract = (signer?: Signer | Provider) => {
+  return getContract(tytanAbi, tokens.tytan.address, signer) as Tytan
 }
 export const getProfileContract = (signer?: Signer | Provider) => {
   return getContract(profileABI, getPancakeProfileAddress(), signer) as PancakeProfile
