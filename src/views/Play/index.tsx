@@ -22,6 +22,10 @@ import { useSlowRefreshEffect } from 'hooks/useRefreshEffect'
 import Deposit from './components/Deposit'
 import Withdraw from './components/Withdraw'
 import FaucetInfo from './components/FaucetInfo'
+import Info from './components/Info'
+import { useMultipleWinners } from 'hooks/useContract'
+import { padStart } from 'lodash'
+import { time } from 'console'
 
 const StyledWrapper = styled(PageSection)`
   padding-top: 16px;
@@ -76,20 +80,23 @@ const BIG_ZERO = new BigNumber(0)
 
 const timeLabels = ["days", "hours", "mins", "sec"]
 
-const multipleWinners = getMultipleWinnersContract()
-
 const formatSeconds = (seconds: number) => {
+  const pad = (n: number) => padStart(n.toString(), 2, "0")
+  if (seconds <= 0) return [0, 0, 0, 0].map(n => pad(n))
+
   return [
     Math.floor(seconds / (3600 * 24)),
     Math.floor(seconds % (3600 * 24) / 3600),
     Math.floor(seconds % 3600 / 60),
     Math.floor(seconds % 60)
-  ]
+  ].map(n => pad(n))
 }
 
 const Play: React.FC = () => {
   const { theme } = useTheme()
   const { account } = useWeb3React()
+
+  const multipleWinners = useMultipleWinners()
 
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const formattedTimeRemaining = useMemo(() => formatSeconds(secondsRemaining), [secondsRemaining])
@@ -141,14 +148,7 @@ const Play: React.FC = () => {
           </StyledColumn>
         </Flex>
 
-        <Flex flexDirection={['column', null, null, 'row']} mb='48px'>
-          <Deposit />
-          <Withdraw />
-        </Flex>
-
-        <FaucetInfo />
-
-        <PrizePoolInfo />
+        <Info enableDeposits={secondsRemaining <= 0} />
       </StyledWrapper>
     </>
   )

@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import { InputGroup } from './Input'
-import { Flex, Text, Input, Button } from '@pancakeswap/uikit'
+import { Flex, Text, Input, Button, Link } from '@pancakeswap/uikit'
 import { useStakePrizePoolContract, useTokenContract } from 'hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTokenBalance } from 'state/wallet/hooks'
 import tokens from 'config/constants/tokens'
 import BigNumber from 'bignumber.js'
@@ -45,7 +45,7 @@ const StyledColumn = styled.div<{ noMarginRight?: boolean }>`
       `}
 `
 
-const Deposit: React.FC = () => {
+const Deposit: React.FC<{ enabled: boolean; ticketSupply: string; depositedBalance: string }> = ({ enabled, ticketSupply, depositedBalance }) => {
   const { account } = useWeb3React()
   const prizePool = useStakePrizePoolContract()
   const tytanContract = useTokenContract(tokens.tytan.address)
@@ -57,11 +57,22 @@ const Deposit: React.FC = () => {
 
   const sanitizeInput = (num: string) => {
     let parsedNum = new BigNumber(num === '' ? '0' : num);
-    if (parsedNum.lte(new BigNumber(balance?.toExact() ?? '0'))) {
-      return parsedNum.decimalPlaces(5).toString()
+    if (parsedNum.lte(new BigNumber(balance?.toFixed(5) ?? '0'))) {
+      let decimals = num.split(/[,.]+/)[1]?.length ?? 0;
+      return parsedNum.toFixed(decimals <= 5 ? decimals ?? 0 : 5)
     }
     return amount
   }
+
+  const odds = useMemo(() => {
+    let n = new BigNumber(depositedBalance)
+      .plus(new BigNumber(amount).multipliedBy(1e5))
+      .div(new BigNumber(ticketSupply).plus(new BigNumber(amount).multipliedBy(1e5)))
+      .multipliedBy(100)
+    return n.isNaN() ? new BigNumber('0') : n
+  }
+    ,
+    [depositedBalance, amount, ticketSupply])
 
   const { isApproving, isApproved, isConfirmed, isConfirming, handleApprove, handleConfirm } =
     useApproveConfirmTransaction({
@@ -81,9 +92,9 @@ const Deposit: React.FC = () => {
         return callWithGasPrice(prizePool, 'depositTo',
           [
             account,
-            (new BigNumber(amount)).times(tokens.tytan.decimals).toFixed(0),
+            (new BigNumber(amount)).times(10 ** tokens.tytan.decimals).toFixed(0),
             getAddress(contracts.playTicket),
-            0
+            "0x0000000000000000000000000000000000000000",
           ]
         )
       },
@@ -96,7 +107,7 @@ const Deposit: React.FC = () => {
     <StyledColumn>
       <Text textAlign='left' mb="8px" fontSize={24}>Deposit</Text>
       <Flex>
-        <InputGroup valueAction={() => { setAmount(`${balance.toFixed(5)}`) }} valueActionLabel="MAX">
+        <InputGroup valueAction={() => { setAmount(`${balance?.toFixed(5) ?? '0'}`) }} valueActionLabel="MAX">
           <Input
             value={amount}
             type="number"
@@ -105,14 +116,19 @@ const Deposit: React.FC = () => {
         </InputGroup>
         <Button
           marginLeft={12}
-          disabled={Number(amount) <= 0}
+          disabled={Number(amount) <= 0 || !enabled}
           onClick={
             isApproved ? handleConfirm : handleApprove
           }
         >
           {isApproved ? 'Deposit' : 'Approve'}</Button>
       </Flex>
-      <Text textAlign="left" mt='8px'>Balance: {balance?.toFixed(2)}</Text>
+      <Text textAlign="left" mt='8px'>Balance: {balance?.toFixed(2) ?? '0'}</Text>
+      {Number(amount) > 0 &&
+        <>
+          <Text textAlign="left" mt='8px'>This increases your odds to {odds.toFixed(2, BigNumber.ROUND_DOWN)}%, or 1 in {new BigNumber(100).dividedBy(odds).toFixed(2)}.</Text>
+        </>
+      }
     </StyledColumn>
   )
 }

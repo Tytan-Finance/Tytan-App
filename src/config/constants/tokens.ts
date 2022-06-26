@@ -2141,7 +2141,7 @@ export const testnetTokens = defineTokens({
   ),
   tytan: new Token(
     TESTNET,
-    '0x00824ed7c5AAbCC60e34F68CCd7c987f1353F629',
+    '0x9c0fBfA315883D640dBE4EECE6Cb037F66bAd8f9',
     5,
     'TYTAN',
     'Tytan',
