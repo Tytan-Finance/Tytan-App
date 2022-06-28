@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { InputGroup } from './Input'
-import { Flex, Text, Input, Button, Link } from '@pancakeswap/uikit'
+import { Flex, Text, Input, Button } from '@pancakeswap/uikit'
 import { useStakePrizePoolContract, useTokenContract } from 'hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
 import { useMemo, useState } from 'react'

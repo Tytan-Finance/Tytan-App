@@ -1,6 +1,7 @@
 export const GRAPH_API_PROFILE = process.env.NEXT_PUBLIC_GRAPH_API_PROFILE
 export const GRAPH_API_PREDICTION = process.env.NEXT_PUBLIC_GRAPH_API_PREDICTION
 export const GRAPH_API_LOTTERY = process.env.NEXT_PUBLIC_GRAPH_API_LOTTERY
+export const GRAPH_PLAY_POOL = process.env.NEXT_PUBLIC_GRAPH_PLAY_POOL
 export const SNAPSHOT_BASE_URL = process.env.NEXT_PUBLIC_SNAPSHOT_BASE_URL
 export const API_PROFILE = process.env.NEXT_PUBLIC_API_PROFILE
 export const API_NFT = process.env.NEXT_PUBLIC_API_NFT

@@ -1,18 +1,8 @@
-import { Flex, Button, Text, SkeletonV2, Skeleton } from "@pancakeswap/uikit"
-import contracts from "config/constants/contracts"
-import { useMultipleWinners, useTokenContract, useTokenFaucetContract } from "hooks/useContract"
-import { useCallback, useMemo, useState, useEffect } from "react"
+import { Flex, Button, Text, Skeleton } from "@pancakeswap/uikit"
+import { useTokenFaucetContract } from "hooks/useContract"
+import { useCallback, useMemo } from "react"
 import styled from "styled-components"
-import { getAddress } from "utils/addressHelpers"
-import tokens from 'config/constants/tokens'
-import useSWR from "swr"
-import { formatBigNumber } from "utils/formatBalance"
-import { multicallv2 } from "utils/multicall"
-import erc20 from 'config/abi/erc20.json'
-import tokenFaucetAbi from 'config/abi/tokenFaucet.json'
-import { SLOW_INTERVAL } from "config/constants"
 import BigNumber from "bignumber.js"
-import { BigNumber as EthersBigNumber } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
 import { useCallWithGasPrice } from "hooks/useCallWithGasPrice"
 import useToast from "hooks/useToast"

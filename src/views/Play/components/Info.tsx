@@ -1,6 +1,5 @@
 import erc20 from "config/abi/erc20.json"
 import tokenFaucetAbi from "config/abi/tokenFaucet.json"
-import { SLOW_INTERVAL } from "config/constants"
 import contracts from "config/constants/contracts"
 import useSWR from "swr"
 import { multicallv2 } from "utils/multicall"

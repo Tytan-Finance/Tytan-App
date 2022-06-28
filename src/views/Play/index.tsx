@@ -5,27 +5,20 @@ import PageSection from 'components/PageSection'
 import { useTranslation } from 'contexts/Localization'
 import useTheme from 'hooks/useTheme'
 import styled from 'styled-components'
-import { multicallv2 } from 'utils/multicall'
-import tytanAbi from 'config/abi/tytan.json'
-import tokens from 'config/constants/tokens'
-import { formatBigNumber, formatLocalisedCompactNumber } from 'utils/formatBalance'
-import { SLOW_INTERVAL } from 'config/constants'
-import { Flex, Text, Input, Button } from '@pancakeswap/uikit'
+import { Flex, Text } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
-import { usePriceCakeBusd } from 'state/farms/hooks'
-import useSWR from 'swr'
-import { InputGroup } from './components/Input'
-import Divider from 'components/Divider'
-import PrizePoolInfo from './components/PrizePoolInfo'
-import { getMultipleWinnersContract } from 'utils/contractHelpers'
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useSlowRefreshEffect } from 'hooks/useRefreshEffect'
-import Deposit from './components/Deposit'
-import Withdraw from './components/Withdraw'
-import FaucetInfo from './components/FaucetInfo'
 import Info from './components/Info'
 import { useMultipleWinners } from 'hooks/useContract'
 import { padStart } from 'lodash'
-import { time } from 'console'
+import useSWR from 'swr'
+import contracts from 'config/constants/contracts'
+import { getAddress } from 'utils/addressHelpers'
+import tokens from 'config/constants/tokens'
+import { multicallv2 } from 'utils/multicall'
+import erc20 from 'config/abi/erc20.json'
+import { usePriceCakeBusd } from 'state/farms/hooks'
 
 const StyledWrapper = styled(PageSection)`
   padding-top: 16px;
@@ -95,6 +88,50 @@ const formatSeconds = (seconds: number) => {
 const Play: React.FC = () => {
   const { theme } = useTheme()
   const { account } = useWeb3React()
+  const tytanPrice = usePriceCakeBusd()
+
+  const {
+    data: { totalTokenSupply, prizePoolBalance } = {
+      totalTokenSupply: "0",
+      prizePoolBalance: "0"
+    },
+    mutate,
+  } = useSWR(
+    ['prizeData'],
+    async () => {
+      const ticketTokenSupplyCall = {
+        address: getAddress(contracts.playTicket),
+        name: 'totalSupply'
+      }
+      const sponsorshipTokenSupplyCall = {
+        address: getAddress(contracts.sponsorshipTicket),
+        name: 'totalSupply'
+      }
+      const prizePoolBalanceCall = {
+        address: tokens.tytan.address,
+        name: 'balanceOf',
+        params: [getAddress(contracts.stakePrizePool)]
+      }
+
+      let tokenDataResultRaw: EthersBigNumber[] = await Promise.all([
+        multicallv2(erc20, [ticketTokenSupplyCall, sponsorshipTokenSupplyCall, prizePoolBalanceCall], {
+          requireSuccess: true,
+        })
+      ])
+
+      const [ticketSupply, sponsorshipSupply, prizePoolBalance] = tokenDataResultRaw.flat()
+
+      return {
+        totalTokenSupply: (ticketSupply && sponsorshipSupply) ? ticketSupply.toString() : '0',
+        prizePoolBalance: prizePoolBalance ? prizePoolBalance.toString() : '0'
+      }
+    },
+    {
+      refreshInterval: 10000,
+    },
+  )
+
+
 
   const multipleWinners = useMultipleWinners()
 
@@ -103,7 +140,9 @@ const Play: React.FC = () => {
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setSecondsRemaining(secondsRemaining - 1)
+      if (secondsRemaining > 0) {
+        setSecondsRemaining(secondsRemaining - 1)
+      }
     }, 1000)
     return () => window.clearInterval(interval);
   }, [secondsRemaining]);
@@ -113,6 +152,12 @@ const Play: React.FC = () => {
       setSecondsRemaining(result.toNumber())
     })
   }, [])
+
+  const prizeAmount = useMemo(() => {
+    let currentPrize = new BigNumber(prizePoolBalance).minus(totalTokenSupply)
+    let estimatedRemainingPrize = new BigNumber(prizePoolBalance).times(new BigNumber(1.00000022615086).pow(secondsRemaining ?? 1)).minus(prizePoolBalance)
+    return currentPrize.plus(estimatedRemainingPrize).shiftedBy(-5).times(tytanPrice)
+  }, [totalTokenSupply, prizePoolBalance, secondsRemaining])
 
   const { t } = useTranslation()
   return (
@@ -134,7 +179,7 @@ const Play: React.FC = () => {
               TYTAN <b>Play</b>
             </Text>
             <Text fontSize={54} color={"primary"} bold marginBottom={18}>
-              $30.231,00
+              ${prizeAmount.toFixed(2)}
             </Text>
             <Text fontSize={24}>Next award in:</Text>
             <NextAward paddingBottom={24}>
