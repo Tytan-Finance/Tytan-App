@@ -9,9 +9,9 @@ import { Flex, Text } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useSlowRefreshEffect } from 'hooks/useRefreshEffect'
-import Info from './components/Info'
+
 import { useMultipleWinners } from 'hooks/useContract'
-import { padStart } from 'lodash'
+
 import useSWR from 'swr'
 import contracts from 'config/constants/contracts'
 import { getAddress } from 'utils/addressHelpers'
@@ -19,6 +19,8 @@ import tokens from 'config/constants/tokens'
 import { multicallv2 } from 'utils/multicall'
 import erc20 from 'config/abi/erc20.json'
 import { usePriceCakeBusd } from 'state/farms/hooks'
+import padStart from 'lodash/padStart'
+import Info from './components/Info'
 
 const StyledWrapper = styled(PageSection)`
   padding-top: 16px;
