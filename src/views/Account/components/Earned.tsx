@@ -168,7 +168,7 @@ const Earned = () => {
             <Skeleton height={24} width={126} my="4px" />
           </>
         )}
-        <StyledText color="textSubtle">{t('Daily ROI 1.97%')}</StyledText>
+        <StyledText color="textSubtle">{t('Daily ROI 1.00%')}</StyledText>
       </StyledColumn>
     </Flex>
   )

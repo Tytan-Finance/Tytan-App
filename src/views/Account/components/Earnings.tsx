@@ -133,7 +133,7 @@ const Earnings = () => {
   const cakePriceBusd = usePriceCakeBusd()
   const mcap = cakePriceBusd.times(myBalance)
   const mcapString = formatLocalisedCompactNumber(mcap.toNumber())
-  const daily = dailyEarning * 1.97 / 100
+  const daily = dailyEarning * 1 / 100
   const dailyEarningsInUsd = cakePriceBusd.times(daily)
 
   useEffect(() => {
