@@ -85,7 +85,7 @@ const emissionsPerBlock = 14.25
  */
 const planetFinanceBurnedTokensWei = BigNumber.from('637407922445268000000000')
 const cakeVault = getCakeVaultV2Contract()
-const apy = 125124.33;
+const apy = 3783.63;
 const padTo2Digits = (num) => {
   return num.toString().padStart(2, '0');
 }

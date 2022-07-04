@@ -146,7 +146,7 @@ const Calculator: React.FC = () => {
   )
 
   const tytanPrice = usePriceCakeBusd()
-  const currentApy = 125124.33;
+  const currentApy = 3783.63;
 
   const [stakeDuration, setStakeDuration] = useState(7);
 
